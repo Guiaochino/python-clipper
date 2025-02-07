@@ -3,6 +3,7 @@ from moviepy.config import check
 import argparse
 import os
 import csv
+import imageio_ffmpeg
 
 def video_clipper(video_file_path, time_extraction_csv):
     try:
@@ -52,7 +53,7 @@ def verify_file_path(file_path):
 
 if __name__ == "__main__":
     # Set the correct ffmpeg path
-    ffmpeg_path = r"C:\Users\chino\.virtualenvs\python-video-trimmer-lN71WkP8\Lib\site-packages\imageio_ffmpeg\binaries\ffmpeg-win-x86_64-v7.1.exe"
+    ffmpeg_path = imageio_ffmpeg.get_ffmpeg_exe()
     os.environ["IMAGEIO_FFMPEG_EXE"] = ffmpeg_path
 
     parser = argparse.ArgumentParser(description='Clip Extraction to Video')
