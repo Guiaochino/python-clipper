@@ -4,6 +4,8 @@ from moviepy import VideoFileClip
 import csv
 import os
 import threading
+import imageio_ffmpeg
+
 
 root = tk.Tk()
 root.title("Video Clipper")
@@ -12,18 +14,23 @@ video_path_var = tk.StringVar()
 csv_path_var = tk.StringVar()
 export_path_var = tk.StringVar()
 
-
 def convert_time_to_seconds(time: str):
     hours, minutes, seconds = time.split(':')
     return int(hours) * 3600 + int(minutes) * 60 + float(seconds)
 
 def clip_video():
+    # Check for ffmpeg path
+    ffmpeg_path = imageio_ffmpeg.get_ffmpeg_version()
+    if ffmpeg_path is None:
+        messagebox.showerror("Error", "FFMPEG not found! Please install imageio-ffmpeg")
+        
+    
     video_path = video_path_var.get()
     csv_path = csv_path_var.get()
     export_path = export_path_var.get()
     
     if not os.path.exists(video_path) or not os.path.exists(csv_path) or not os.path.exists(export_path):
-        messagebox.showerror("Error", "Invalid file paths!")
+        messagebox.showerror("Error", f"Invalid file paths:\nVideo: {video_path}\nCSV: {csv_path}\nExport: {export_path}")
         return
     
     try:
@@ -37,7 +44,12 @@ def clip_video():
                 end = convert_time_to_seconds(logs.get('end_time', '').strip())
                 output_filename = os.path.join(export_path, logs.get('filename', 'output').strip() + ".mp4")
                 
-                trimmed_clip = clip.subclipped(start, end)
+                trimmed_clip: VideoFileClip = clip.subclipped(start, end)
+                # Type Guard
+                if trimmed_clip is None:
+                    messagebox.showerror('Error', f'Invalid subclip: {start} - {end}')
+                    return
+                
                 trimmed_clip.write_videofile(output_filename, codec="libx264")
                 
                 progressbar["value"] = i

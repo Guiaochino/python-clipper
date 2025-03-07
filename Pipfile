@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 moviepy = "*"
 pyinstaller = "*"
+imageio = "*"
+imageio-ffmpeg = "*"
 
 [dev-packages]
 
