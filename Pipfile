@@ -6,6 +6,9 @@ name = "pypi"
 [packages]
 moviepy = "*"
 pyinstaller = "*"
+opencv-python = "*"
+pyqt5 = "*"
+python-vlc = "*"
 
 [dev-packages]
 
